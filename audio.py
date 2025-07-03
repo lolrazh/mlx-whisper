@@ -40,10 +40,14 @@ def load_audio(file: str = Optional[str], sr: int = SAMPLE_RATE, from_stdin=Fals
 
     # This launches a subprocess to decode audio while down-mixing
     # and resampling as necessary. Requires the ffmpeg CLI in PATH.
+    ffmpeg_path = os.path.join(os.path.dirname(__file__), "bin", "ffmpeg")
+    if not os.path.exists(ffmpeg_path):
+        ffmpeg_path = "ffmpeg"  # Fallback to PATH if not found
+
     if from_stdin:
-        cmd = ["ffmpeg", "-i", "pipe:0"]
+        cmd = [ffmpeg_path, "-i", "pipe:0"]
     else:
-        cmd = ["ffmpeg", "-nostdin", "-i", file]
+        cmd = [ffmpeg_path, "-nostdin", "-i", file]
 
     # fmt: off
     cmd.extend([
